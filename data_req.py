@@ -4,27 +4,23 @@ import matplotlib.pyplot as plt
 import json
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-data_dir = CURR_DIR_PATH + "/data/"
-target_dir = data_dir + "/rawfiles/"
-# 1 
-config = configparser.ConfigParser()
-config.read(CURR_DIR_PATH + "/config.ini")
+data_dir = CURR_DIR_PATH + "/raw_data/" + "data.json"
+target_dir = CURR_DIR_PATH + "/target_data/" + "data.json"
 
-# 2 
-API_KEY = config.get("DEV", "API_KEY")
-
-# 3 
+# 1 Get data
 WEATHER_URL = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json"
 # GET /api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json
 
 r = requests.get(WEATHER_URL)
 
-# 5 
+# 2 Save json file with raw data
 if r.status_code == 200: # If connection is successful (200: http ok)
     json_data = r.json() # Get result in json
+with open(data_dir, "w") as f:
+    json.dump(json_data, f)
 
+# 3 function 
 dict = json.loads(r.text)
-
 def parameterchoice(choice):
     result = {} # empty list
 
@@ -45,11 +41,9 @@ weather_data = {
                 "precipitation": parameterchoice('msl')
             }
               
-# #                 "date": json_data[]
+# ***************SHALL WE ADD DATES DATA TO THE DICTIONARY?*******************
 
 # weather_data = pd.json_normalize(weather_data)
 
-
-print(weather_data)
 df = pd.DataFrame(weather_data)
-df.to_json(CURR_DIR_PATH + "/data/" + "data.json")
+df.to_json(target_dir)
