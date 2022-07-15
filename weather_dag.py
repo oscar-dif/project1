@@ -16,7 +16,7 @@ target_dir = CURR_DIR_PATH + "/target_data/" + "data.json"
 
 # COnnection to database can be done outside of functions once, 
 # but do we need to proof check database connection works?
-conn_string = "postgresql+psycopg2://postgres:pass@localhost:5433/weather_data"
+conn_string = "postgresql+psycopg2://postgres:pass@localhost:5432/weather_data"
 #conn_string = "postgresql://postgres:pass@localhost/weather_data"  ##this one worked
 db = create_engine(conn_string)
 conn = db.connect()
