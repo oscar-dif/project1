@@ -7,21 +7,17 @@ import requests, os
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
-from sqlalchemy import create_engine
+from sqlalchemy import *
 import psycopg2 as ps
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 data_dir = CURR_DIR_PATH + "/raw_data/" + "data.json"
 target_dir = CURR_DIR_PATH + "/target_data/" + "data.json"
 
-# COnnection to database can be done outside of functions once, 
-# but do we need to proof check database connection works?
-conn_string = "postgresql+psycopg2://postgres:pass@localhost:5432/weather_data"
-#conn_string = "postgresql://postgres:pass@localhost/weather_data"  ##this one worked
+conn_string = "postgresql://postgres:pass@127.0.0.1/weather_data"
 db = create_engine(conn_string)
 conn = db.connect()
 WEATHER_URL = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json"
-
 
 #******************************************************************************************
 def request():
@@ -56,22 +52,16 @@ def create_harmony_dict(): #creates dict from selected data
     return weather_data
 
 def save_harmony_data(): #saves harmonized data in json
-    df = pd.DataFrame(create_harmony_dict) # Can I do this?************
-    df.to_json(target_dir) #saves harmonized data
+    df = pd.DataFrame(create_harmony_dict()) 
+    df.to_json(target_dir) 
 
 def sql_transfer():
-    df = pd.DataFrame(create_harmony_dict) #this might need to be changed to ti.xcom_pull
-    # to get updated data from harmonized.   Do we need intermediate def
-    #from harmonized function that returns pandas weather_data dict?
-    df.to_sql('weather_data', con=conn, if_exists='replace', index=False)
-    conn = ps.connect(conn_string)
-    conn.autocommit = True #do we need this?
-    cursor = conn.cursor()
-    weather1 = """select * from weather_data;"""
-    cursor.execute(weather1)
-    for i in cursor.fetchall():
+    df = pd.DataFrame(create_harmony_dict()) 
+    df.to_sql('weather_data', conn, if_exists='replace', index=False)
+    conn.autocommit = True 
+    weather1 = db.execute(text("select * from weather_data;"))
+    for i in weather1:
         print(i)
-    conn.close()
 
 
 
@@ -112,4 +102,4 @@ with DAG("weather_dag", start_date=datetime(2022, 7, 14),
         )
 
 
-        [save_rawdata, training_model_B, training_model_C] >> choose_best_model >> [accurate, inaccurate]
+        [save_rawdata, temp_data, pmean_data, msl_data] >> harmony_dict >> to_sql
