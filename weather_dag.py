@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.operators.bash import BashOperator
 
+
 from datetime import datetime
 import requests, os
 import pandas as pd
@@ -43,13 +44,40 @@ def parameterchoice(choice): #searches for data in api
         result[f"{n}"] = choice_value
     return result
 
+def date_collect():
+    r = request()
+    dict = json.loads(r.text)
+    result = {}
+    for n in range(len(dict['timeSeries'])):
+        datedata = dict['timeSeries'][n]["validTime"]
+        datedata = datedata[2:10] + " " + datedata[11:16]  #comment out to keep the original formatting
+        result[f"{n}"] = datedata   
+    return result
+    
 def create_harmony_dict(): #creates dict from selected data
     weather_data = {
+                    "date": date_collect(),
                     "temperature": parameterchoice('t'),
                     "air pressure": parameterchoice('pmean'),
                     "precipitation": parameterchoice('msl')
                 }
     return weather_data
+
+def line_plot():
+    data = pd.read_json(CURR_DIR_PATH + "/target_data/" + "data.json")
+    fig, ax = plt.subplots() 
+    plt.title("Line Plot")
+    # Line plot with day against tip
+    ax.plot(data['temperature'], color = 'green')
+    ax.tick_params(axis='y', labelcolor='green')
+    ax.set_xlabel('Hourly')
+    ax.set_ylabel('Temperature')    
+    #adding second y axis
+    ax2 = ax.twinx()
+    ax2.set_ylabel('Precipitation')
+    ax2.plot(data['precipitation'], color = 'blue')
+    ax2.tick_params(axis='y', labelcolor='blue')
+    plt.show()
 
 def save_harmony_data(): #saves harmonized data in json
     df = pd.DataFrame(create_harmony_dict()) 
@@ -65,30 +93,33 @@ def sql_transfer():
 
 
 
-
-
 #####*****************************DAG*********************************************
 with DAG("weather_dag", start_date=datetime(2022, 7, 14),
     schedule_interval="@hourly", catchup=False) as dag:
 
         save_rawdata = PythonOperator(
-            task_id = "save_raw_data",
+            task_id = "save_rawdata",
             python_callable=rawdata
         )
 
         temp_data = PythonOperator(
-            task_id = "temp_dict",
+            task_id = "temp_data",
             python_callable=parameterchoice('t')
         )
         
         pmean_data = PythonOperator(
-            task_id = "pmean_dict",
+            task_id = "pmean_data",
             python_callable=parameterchoice('pmean')
         )
         
         msl_data = PythonOperator(
-            task_id = "msl_dict",
+            task_id = "msl_data",
             python_callable=parameterchoice('msl')
+        )
+
+        line_plot = PythonOperator(
+            task_id = "line_plot",
+            python_callable=line_plot
         )
 
         harmony_dict = PythonOperator(
@@ -102,4 +133,4 @@ with DAG("weather_dag", start_date=datetime(2022, 7, 14),
         )
 
 
-        [save_rawdata, temp_data, pmean_data, msl_data] >> harmony_dict >> to_sql
+        [save_rawdata, temp_data, pmean_data, msl_data] >> line_plot >> harmony_dict >> to_sql
