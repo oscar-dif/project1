@@ -1,4 +1,6 @@
-
+from sqlalchemy import create_engine
+engine = create_engine('postgresql://username:password@localhost:5432/mydatabase')
+df.to_sql('table_name', engine)
 
 -------------------------------------------------------------------------------
 For sql in ubuntu:
@@ -53,6 +55,10 @@ print(L)
 
 
 -------------------------------------------------------------------------------
+quit venv:
+    deactivate
+
+-------------------------------------------------------------------------------
 
  install on ubuntu:
 
@@ -90,9 +96,11 @@ print(L)
 
     psycopg2:
     in venv:
-        pip install psycopg2
+        pip install psycopg2-binary
 
 
+
+-------------------------------------------------------------------------------
 
 update ubuntu by:
 sudo apt update && sudo apt upgrade -y
@@ -109,6 +117,7 @@ active postgres in venv ubuntu:
     start postgres:
     sudo service postgresql start
     sudo -u postgres psql
+
 
     create postgres user:
     create user danieljs with password 'abc123';
@@ -127,4 +136,17 @@ active postgres in venv ubuntu:
 
 
 
-    
+-------------------------------------------------------------------------------
+
+quit open venv:
+lsof -i tcp:8080
+kill nr
+lsof -i tcp:8080
+
+
+-------------------------------------------------------------------------------
+activate only venv:
+i airflow:
+. .//venv/bin/activate
+
+ps -deaf | grep airflow
