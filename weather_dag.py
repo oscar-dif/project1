@@ -102,20 +102,11 @@ with DAG("weather_dag", start_date=datetime(2022, 7, 14),
             python_callable=rawdata
         )
 
-        temp_data = PythonOperator(
-            task_id = "temp_data",
-            python_callable=parameterchoice('t')
+        create_harmony_dict = PythonOperator(
+            task_id = "create_harmony_dict",
+            python_callable=create_harmony_dict
         )
         
-        pmean_data = PythonOperator(
-            task_id = "pmean_data",
-            python_callable=parameterchoice('pmean')
-        )
-        
-        msl_data = PythonOperator(
-            task_id = "msl_data",
-            python_callable=parameterchoice('msl')
-        )
 
         line_plot = PythonOperator(
             task_id = "line_plot",
@@ -133,4 +124,4 @@ with DAG("weather_dag", start_date=datetime(2022, 7, 14),
         )
 
 
-        [save_rawdata, temp_data, pmean_data, msl_data] >> line_plot >> harmony_dict >> to_sql
+        [save_rawdata, create_harmony_dict] >> line_plot >> harmony_dict >> to_sql
