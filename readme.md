@@ -5,6 +5,8 @@ Continous follow up and careful disposal of time were keys to finish the project
 
 Catherine - working with different tools and systems has been challenging and fun at the same time. It has been interesting to collaborate with team members to find different solutions to the same problem and brainstorm ideas on how to optimise various parts of the project.
 
+Daniel - The greatest experience were how to connect the different tools, more specific api with python then ETL and from there use Ubuntu and make that work. Gained thoughts on different ways to start and interact with, alteast, this project. Most thoughts are on more Agile and Kanban structure and more use of version management tools. Also dare to divide the different tasks early to learn where each part stops or got challenges. 
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 from sqlalchemy import create_engine
 engine = create_engine('postgresql://username:password@localhost:5432/mydatabase')
