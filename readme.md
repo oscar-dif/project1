@@ -1,4 +1,4 @@
-### Experiences:
+# Experiences:
 
 Oscar - To work in a team and collaborate to achive something together is probably the biggest experience I gained during the project.
 Continous follow up and careful disposal of time was key to finish the project in time.
