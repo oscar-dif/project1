@@ -1,7 +1,7 @@
 # Experiences:
 
 Oscar - To work in a team and collaborate to achieve something together is probably the biggest experience I gained during the project.
-Continous follow up and careful disposal of time was key to finish the project in time.
+Continous follow up and careful disposal of time were keys to finish the project in time.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 from sqlalchemy import create_engine
