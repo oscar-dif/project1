@@ -1,3 +1,9 @@
+### Experiences:
+
+Oscar - To work in a team and collaborate to achive something together is probably the biggest experience I gained during the project.
+Continous follow up and careful disposal of time was key to finish the project in time.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
 from sqlalchemy import create_engine
 engine = create_engine('postgresql://username:password@localhost:5432/mydatabase')
 df.to_sql('table_name', engine)
