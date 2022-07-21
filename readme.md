@@ -2,6 +2,7 @@
 
 Oscar - To work in a team and collaborate to achieve something together is probably the biggest experience I gained during the project.
 Continous follow up and careful disposal of time were keys to finish the project in time.
+
 Catherine - working with different tools and systems has been challenging and fun at the same time. It has been interesting to collaborate with team members to find different solutions to the same problem and brainstorm ideas on how to optimise various parts of the project.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
